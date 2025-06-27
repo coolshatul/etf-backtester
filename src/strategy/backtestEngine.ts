@@ -1,6 +1,5 @@
 import settings from '../config/settings';
 
-// Define what a single trade looks like
 interface Trade {
   type: 'BUY' | 'SELL';
   date: string;
@@ -9,7 +8,6 @@ interface Trade {
   holdingDays?: number;
 }
 
-// Return value of the backtest
 interface Result {
   trades: Trade[];
   summary: {
@@ -97,8 +95,9 @@ export function backtestStrategy(data: any[]): Result {
       const hitTakeProfit = priceChange >= config.takeProfit;
       const trailingExit = priceChange >= config.trailingTrigger && drawdown <= -config.trailingStop;
       const bollingerExit = day.close >= bbUpper && rsi < prev1.rsi;
+      const rsiExit = rsi > 70 && rsi < prev1.rsi;
 
-      const shouldSell = hitStopLoss || hitTakeProfit || trailingExit || bollingerExit;
+      const shouldSell = hitStopLoss || hitTakeProfit || trailingExit || bollingerExit || rsiExit;
 
       if (shouldSell) {
         inPosition = false;
@@ -112,9 +111,14 @@ export function backtestStrategy(data: any[]): Result {
         totalProfit += priceChange;
         entry = null;
 
-        cooldownUntil = new Date(currentDate.getTime() + config.cooldownDays * 86400000)
-          .toISOString()
-          .slice(0, 10);
+        // ✅ Set cooldown only if configured
+        if (config.cooldownDays > 0) {
+          cooldownUntil = new Date(currentDate.getTime() + config.cooldownDays * 86400000)
+            .toISOString()
+            .slice(0, 10);
+        } else {
+          cooldownUntil = null;
+        }
       }
     }
   }

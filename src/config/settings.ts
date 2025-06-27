@@ -3,7 +3,7 @@ export default {
   emaFastPeriod: 8,
   emaSlowPeriod: 18,
   // trailing & risk config
-  takeProfit: 10, // Exit if gain hits 8%
+  takeProfit: 8, // Exit if gain hits 8%
   stopLoss: 3, // Exit if loss hits 3%
   trailingTrigger: 5, // Start trailing after 5% gain
   trailingStop: 2, // Exit if drop from peak is >2%

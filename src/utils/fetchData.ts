@@ -1,6 +1,7 @@
 import yahooFinance from 'yahoo-finance2';
 import fs from 'fs';
 import path from 'path';
+yahooFinance.suppressNotices(['ripHistorical']);
 
 type Interval = "1d" | "1wk" | "1mo";
 
